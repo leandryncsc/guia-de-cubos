@@ -85,7 +85,7 @@ export function parseAlg(src: string): Move[] {
   let i = 0;
   const readMods = () => {
     let num = "", prime = false;
-    while (i < s.length && /[0-9']/.test(s[i])) {
+    while (i < s.length && /[0-9']/.test(s[i] ?? "")) {
       if (s[i] === "'") prime = true; else num += s[i];
       i++;
     }
