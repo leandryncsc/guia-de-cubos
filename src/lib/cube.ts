@@ -39,7 +39,7 @@ export function rotate(v: Vec, axis: number, deg: number, round = true): Vec {
 }
 
 export function moveInfo(m: Move) {
-  const d = DEFS[m.face];
+  const d = DEFS[m.face]!;
   return { axis: d.axis, deg: d.deg * m.amount, inLayer: (s: Sticker) => d.layer(s.p[d.axis]) };
 }
 
@@ -53,7 +53,7 @@ export function solved(): Sticker[] {
     const ax = n.findIndex((v) => v !== 0);
     for (const i of [-1, 0, 1]) for (const j of [-1, 0, 1]) {
       const p: Vec = [0, 0, 0];
-      p[ax] = n[ax];
+      p[ax] = n[ax]!;
       p[(ax + 1) % 3] = i;
       p[(ax + 2) % 3] = j;
       out.push({ p, n: [...n] as Vec, c });

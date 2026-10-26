@@ -20,7 +20,7 @@ function stickerMatrix(s: Sticker, S: number, anim?: { axis: number; deg: number
 }
 
 export function CubeView({ state, anim, size = 180, view = "front" }: {
-  state: Sticker[]; anim?: { move: Move; t: number }; size?: number; view?: "front" | "top";
+  state: Sticker[]; anim?: { move: Move; t: number } | undefined; size?: number; view?: "front" | "top" | undefined;
 }) {
   const S = size / 3.4;
   const info = anim ? moveInfo(anim.move) : null;
@@ -42,7 +42,7 @@ export function CubeView({ state, anim, size = 180, view = "front" }: {
 }
 
 export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 180, compact = false, view }: {
-  alg: string; setup?: string; loop?: boolean; autoplay?: boolean; size?: number; compact?: boolean; view?: "front" | "top";
+  alg: string; setup?: string; loop?: boolean; autoplay?: boolean; size?: number; compact?: boolean; view?: "front" | "top" | undefined;
 }) {
   const moves = useMemo(() => parseAlg(alg), [alg]);
   const initial = useMemo(() => applyAlg(solved(), parseAlg(setup ?? "")), [setup]);
@@ -76,6 +76,7 @@ export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 
     }
     if (loop) { const id = setTimeout(reset, 1100); return () => clearTimeout(id); }
     setPlaying(false);
+    return undefined;
   }, [playing, anim, idx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
