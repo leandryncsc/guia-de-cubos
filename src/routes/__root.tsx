@@ -78,20 +78,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Cubo Fácil — aprenda a montar o cubo mágico" },
+      { name: "description", content: "Dicas, notação de movimentos e algoritmos animados para montar o cubo mágico 3x3." },
+      { property: "og:title", content: "Cubo Fácil — aprenda a montar o cubo mágico" },
+      { property: "og:description", content: "Dicas, notação de movimentos e algoritmos animados para montar o cubo mágico 3x3." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
@@ -103,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
@@ -121,7 +122,24 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <header className="sticky top-0 z-20 border-b-2 border-border bg-background/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <Link to="/" className="font-display text-xl font-extrabold tracking-tight">
+            Cubo<span className="text-primary">Fácil</span>
+          </Link>
+          <nav className="flex flex-wrap gap-1 text-sm">
+            {([["/", "Início"], ["/notacao", "Movimentos"], ["/metodo", "Passo a passo"], ["/oll", "OLL"], ["/pll", "PLL"]] as const).map(([to, label]) => (
+              <Link key={to} to={to} className="nav-link" activeOptions={{ exact: true }} activeProps={{ className: "nav-link-active" }}>{label}</Link>
+            ))}
+          </nav>
+        </div>
+      </header>
+      <main className="mx-auto max-w-6xl px-4 py-10">
+        <Outlet />
+      </main>
+      <footer className="border-t-2 border-border py-6 text-center text-sm text-muted-foreground">
+        Algoritmos OLL/PLL baseados no material de O Cubo (Adel Fonseca).
+      </footer>
     </QueryClientProvider>
   );
 }
