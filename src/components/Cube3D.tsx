@@ -20,14 +20,14 @@ function stickerMatrix(s: Sticker, S: number, anim?: { axis: number; deg: number
 }
 
 export function CubeView({ state, anim, size = 180, view = "front" }: {
-  state: Sticker[]; anim?: { move: Move; t: number } | undefined; size?: number; view?: "front" | "top" | undefined;
+  state: Sticker[]; anim?: { move: Move; t: number } | undefined; size?: number; view?: "front" | "top" | "under" | undefined;
 }) {
   const S = size / 3.4;
   const info = anim ? moveInfo(anim.move) : null;
   const ease = anim ? 0.5 - Math.cos(anim.t * Math.PI) / 2 : 0;
   return (
     <div className="cube-stage" style={{ width: size * 1.45, height: size * 1.45 }}>
-      <div className={cn("cube-body", view === "top" && "cube-body-top")}>
+      <div className={cn("cube-body", view === "top" && "cube-body-top", view === "under" && "cube-body-under")}>
         {state.map((s, i) => {
           const a = info && info.inLayer(s) ? { axis: info.axis, deg: info.deg * ease } : undefined;
           return (
@@ -42,13 +42,14 @@ export function CubeView({ state, anim, size = 180, view = "front" }: {
 }
 
 export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 180, compact = false, view }: {
-  alg: string; setup?: string; loop?: boolean; autoplay?: boolean; size?: number; compact?: boolean; view?: "front" | "top" | undefined;
+  alg: string; setup?: string; loop?: boolean; autoplay?: boolean; size?: number; compact?: boolean; view?: "front" | "top" | "under" | undefined;
 }) {
   const moves = useMemo(() => parseAlg(alg), [alg]);
   const initial = useMemo(() => applyAlg(solved(), parseAlg(setup ?? "")), [setup]);
   const [state, setState] = useState(initial);
   const [idx, setIdx] = useState(0);
   const [playing, setPlaying] = useState(autoplay);
+  const [vw, setVw] = useState(view);
   const [anim, setAnim] = useState<{ move: Move; t: number } | undefined>();
   const raf = useRef(0);
 
@@ -86,7 +87,7 @@ export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <CubeView state={state} anim={anim} size={size} view={view} />
+      <CubeView state={state} anim={anim} size={size} view={vw} />
       {!compact && (
         <>
           <div className="flex flex-wrap justify-center gap-1 font-mono text-sm">
@@ -102,6 +103,7 @@ export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 
             </button>
             <button className="btn-toy btn-toy-ghost" onClick={step} disabled={playing}>Passo</button>
             <button className="btn-toy btn-toy-ghost" onClick={() => { setPlaying(false); reset(); }}>Reiniciar</button>
+            <button className="btn-toy btn-toy-ghost" onClick={() => setVw((v) => (v === "under" ? "front" : "under"))}>{vw === "under" ? "Ver cima" : "Ver baixo"}</button>
           </div>
         </>
       )}
