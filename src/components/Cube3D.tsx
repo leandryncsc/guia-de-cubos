@@ -114,7 +114,7 @@ export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 
               </span>
             ))}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap justify-center gap-2 text-sm">
             <button className="btn-toy" onClick={() => { if (idx >= moves.length) reset(); setPlaying((p) => !p); }}>
               {playing ? "Pausar" : idx >= moves.length ? "Repetir" : "Reproduzir"}
             </button>
