@@ -12,7 +12,8 @@ function stickerMatrix(s: Sticker, S: number, anim?: { axis: number; deg: number
   let u = unit((ax + 1) % 3), v = unit((ax + 2) % 3), n: Vec = [...s.n] as Vec;
   let t: Vec = [s.p[0] * S + s.n[0] * (S / 2), s.p[1] * S + s.n[1] * (S / 2), s.p[2] * S + s.n[2] * (S / 2)];
   if (anim) {
-    [u, v, n, t] = [u, v, n, t].map((x) => rotate(x, anim.axis, anim.deg, false));
+    const r = (x: Vec) => rotate(x, anim.axis, anim.deg, false);
+    u = r(u); v = r(v); n = r(n); t = r(t);
   }
   const f = (x: Vec) => [x[0], -x[1], x[2]];
   return `matrix3d(${[...f(u), 0, ...f(v), 0, ...f(n), 0, ...f(t), 1].map((x) => x.toFixed(4)).join(",")})`;
@@ -56,6 +57,7 @@ export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 
 
   const runMove = (i: number) => {
     const move = moves[i];
+    if (!move) return;
     const dur = move.amount === 2 ? 650 : 420;
     const start = performance.now();
     const tick = (now: number) => {
