@@ -103,7 +103,8 @@ export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <CubeView state={state} anim={anim} size={size} view={vw} />
+      <CubeView state={state} anim={anim} size={size} view={vw} draggable={!compact} />
+      {!compact && <p className="text-xs text-muted-foreground">Arraste o cubo para girar · duplo clique volta</p>}
       {!compact && (
         <>
           <div className="flex flex-wrap justify-center gap-1 font-mono text-sm">
