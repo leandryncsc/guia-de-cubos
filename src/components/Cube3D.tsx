@@ -19,15 +19,31 @@ function stickerMatrix(s: Sticker, S: number, anim?: { axis: number; deg: number
   return `matrix3d(${[...f(u), 0, ...f(v), 0, ...f(n), 0, ...f(t), 1].map((x) => x.toFixed(4)).join(",")})`;
 }
 
-export function CubeView({ state, anim, size = 180, view = "front" }: {
-  state: Sticker[]; anim?: { move: Move; t: number } | undefined; size?: number; view?: "front" | "top" | "under" | undefined;
+const VIEWS = { front: [-28, -38], top: [-55, -30], under: [30, -38] } as const;
+
+export function CubeView({ state, anim, size = 180, view = "front", draggable = true }: {
+  state: Sticker[]; anim?: { move: Move; t: number } | undefined; size?: number; view?: "front" | "top" | "under" | undefined; draggable?: boolean;
 }) {
   const S = size / 3.4;
   const info = anim ? moveInfo(anim.move) : null;
   const ease = anim ? 0.5 - Math.cos(anim.t * Math.PI) / 2 : 0;
+  const [rot, setRot] = useState<[number, number]>([...VIEWS[view]]);
+  useEffect(() => setRot([...VIEWS[view]]), [view]);
+  const drag = useRef<{ x: number; y: number; r: [number, number] } | null>(null);
   return (
-    <div className="cube-stage" style={{ width: size * 1.45, height: size * 1.45 }}>
-      <div className={cn("cube-body", view === "top" && "cube-body-top", view === "under" && "cube-body-under")}>
+    <div
+      className={cn("cube-stage", draggable && "cube-stage-drag")}
+      style={{ width: size * 1.45, height: size * 1.45 }}
+      onPointerDown={draggable ? (e) => { e.currentTarget.setPointerCapture(e.pointerId); drag.current = { x: e.clientX, y: e.clientY, r: rot }; } : undefined}
+      onPointerMove={draggable ? (e) => {
+        const d = drag.current; if (!d) return;
+        setRot([Math.max(-89, Math.min(89, d.r[0] - (e.clientY - d.y) * 0.6)), d.r[1] + (e.clientX - d.x) * 0.6]);
+      } : undefined}
+      onPointerUp={() => { drag.current = null; }}
+      onDoubleClick={() => setRot([...VIEWS[view]])}
+      title={draggable ? "Arraste para girar · duplo clique para voltar" : undefined}
+    >
+      <div className="cube-body" style={{ transform: `rotateX(${rot[0]}deg) rotateY(${rot[1]}deg)` }}>
         {state.map((s, i) => {
           const a = info && info.inLayer(s) ? { axis: info.axis, deg: info.deg * ease } : undefined;
           return (
