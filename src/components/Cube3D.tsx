@@ -1,0 +1,133 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  applyAlg, applyMove, moveInfo, moveLabel, parseAlg, rotate, solved,
+  type Move, type Sticker, type Vec,
+} from "@/lib/cube";
+import { cn } from "@/lib/utils";
+
+const unit = (i: number): Vec => [0, 1, 2].map((k) => (k === i ? 1 : 0)) as Vec;
+
+function stickerMatrix(s: Sticker, S: number, anim?: { axis: number; deg: number }) {
+  const ax = s.n.findIndex((v) => v !== 0);
+  let u = unit((ax + 1) % 3), v = unit((ax + 2) % 3), n: Vec = [...s.n] as Vec;
+  let t: Vec = [s.p[0] * S + s.n[0] * (S / 2), s.p[1] * S + s.n[1] * (S / 2), s.p[2] * S + s.n[2] * (S / 2)];
+  if (anim) {
+    const r = (x: Vec) => rotate(x, anim.axis, anim.deg, false);
+    u = r(u); v = r(v); n = r(n); t = r(t);
+  }
+  const f = (x: Vec) => [x[0], -x[1], x[2]];
+  return `matrix3d(${[...f(u), 0, ...f(v), 0, ...f(n), 0, ...f(t), 1].map((x) => x.toFixed(4)).join(",")})`;
+}
+
+export function CubeView({ state, anim, size = 180, view = "front" }: {
+  state: Sticker[]; anim?: { move: Move; t: number } | undefined; size?: number; view?: "front" | "top" | undefined;
+}) {
+  const S = size / 3.4;
+  const info = anim ? moveInfo(anim.move) : null;
+  const ease = anim ? 0.5 - Math.cos(anim.t * Math.PI) / 2 : 0;
+  return (
+    <div className="cube-stage" style={{ width: size * 1.45, height: size * 1.45 }}>
+      <div className={cn("cube-body", view === "top" && "cube-body-top")}>
+        {state.map((s, i) => {
+          const a = info && info.inLayer(s) ? { axis: info.axis, deg: info.deg * ease } : undefined;
+          return (
+            <div key={i} className="cube-sticker" style={{ width: S, height: S, marginLeft: -S / 2, marginTop: -S / 2, transform: stickerMatrix(s, S, a) }}>
+              <span style={{ background: `var(--cube-${s.c})` }} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 180, compact = false, view }: {
+  alg: string; setup?: string; loop?: boolean; autoplay?: boolean; size?: number; compact?: boolean; view?: "front" | "top" | undefined;
+}) {
+  const moves = useMemo(() => parseAlg(alg), [alg]);
+  const initial = useMemo(() => applyAlg(solved(), parseAlg(setup ?? "")), [setup]);
+  const [state, setState] = useState(initial);
+  const [idx, setIdx] = useState(0);
+  const [playing, setPlaying] = useState(autoplay);
+  const [anim, setAnim] = useState<{ move: Move; t: number } | undefined>();
+  const raf = useRef(0);
+
+  const reset = () => { cancelAnimationFrame(raf.current); setAnim(undefined); setState(initial); setIdx(0); };
+  useEffect(reset, [initial, moves]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const runMove = (i: number) => {
+    const move = moves[i];
+    if (!move) return;
+    const dur = move.amount === 2 ? 650 : 420;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / dur);
+      if (t < 1) { setAnim({ move, t }); raf.current = requestAnimationFrame(tick); }
+      else { setAnim(undefined); setState((s) => applyMove(s, move)); setIdx(i + 1); }
+    };
+    raf.current = requestAnimationFrame(tick);
+  };
+
+  useEffect(() => {
+    if (!playing || anim) return;
+    if (idx < moves.length) {
+      const id = setTimeout(() => runMove(idx), idx === 0 ? 400 : 120);
+      return () => clearTimeout(id);
+    }
+    if (loop) { const id = setTimeout(reset, 1100); return () => clearTimeout(id); }
+    setPlaying(false);
+    return undefined;
+  }, [playing, anim, idx]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+
+  const step = () => { if (!anim && idx < moves.length) runMove(idx); };
+  const current = anim ? idx : idx - 1;
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <CubeView state={state} anim={anim} size={size} view={view} />
+      {!compact && (
+        <>
+          <div className="flex flex-wrap justify-center gap-1 font-mono text-sm">
+            {moves.map((m, i) => (
+              <span key={i} className={cn("move-chip", i === current && "move-chip-active", i < current && "move-chip-done")}>
+                {moveLabel(m)}
+              </span>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button className="btn-toy" onClick={() => { if (idx >= moves.length) reset(); setPlaying((p) => !p); }}>
+              {playing ? "Pausar" : idx >= moves.length ? "Repetir" : "Reproduzir"}
+            </button>
+            <button className="btn-toy btn-toy-ghost" onClick={step} disabled={playing}>Passo</button>
+            <button className="btn-toy btn-toy-ghost" onClick={() => { setPlaying(false); reset(); }}>Reiniciar</button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Vista superior 2D da última camada (para OLL/PLL)
+export function TopView({ state, size = 110 }: { state: Sticker[]; size?: number }) {
+  const c = size / 5;
+  const cells: { x: number; y: number; w: number; h: number; col: string }[] = [];
+  for (const s of state) {
+    if (s.p[1] !== 1) continue;
+    const gx = s.p[0] + 2, gy = s.p[2] + 2;
+    const col = `var(--cube-${s.c})`;
+    if (s.n[1] === 1) cells.push({ x: gx * c, y: gy * c, w: c, h: c, col });
+    else if (s.n[2] === 1) cells.push({ x: gx * c, y: 4 * c + c * 0.15, w: c, h: c * 0.55, col });
+    else if (s.n[2] === -1) cells.push({ x: gx * c, y: c * 0.3, w: c, h: c * 0.55, col });
+    else if (s.n[0] === 1) cells.push({ x: 4 * c + c * 0.15, y: gy * c, w: c * 0.55, h: c, col });
+    else cells.push({ x: c * 0.3, y: gy * c, w: c * 0.55, h: c, col });
+  }
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {cells.map((r, i) => (
+        <rect key={i} x={r.x + 1.5} y={r.y + 1.5} width={r.w - 3} height={r.h - 3} rx={3} fill={r.col} stroke="var(--foreground)" strokeWidth={1.5} />
+      ))}
+    </svg>
+  );
+}

@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MetodoRouteImport } from './routes/metodo'
+import { Route as NotacaoRouteImport } from './routes/notacao'
+import { Route as OllRouteImport } from './routes/oll'
+import { Route as PllRouteImport } from './routes/pll'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MetodoRoute = MetodoRouteImport.update({
+  id: '/metodo',
+  path: '/metodo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotacaoRoute = NotacaoRouteImport.update({
+  id: '/notacao',
+  path: '/notacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OllRoute = OllRouteImport.update({
+  id: '/oll',
+  path: '/oll',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PllRoute = PllRouteImport.update({
+  id: '/pll',
+  path: '/pll',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/metodo': typeof MetodoRoute
+  '/notacao': typeof NotacaoRoute
+  '/oll': typeof OllRoute
+  '/pll': typeof PllRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/metodo': typeof MetodoRoute
+  '/notacao': typeof NotacaoRoute
+  '/oll': typeof OllRoute
+  '/pll': typeof PllRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/metodo': typeof MetodoRoute
+  '/notacao': typeof NotacaoRoute
+  '/oll': typeof OllRoute
+  '/pll': typeof PllRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/metodo' | '/notacao' | '/oll' | '/pll'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/metodo' | '/notacao' | '/oll' | '/pll'
+  id: '__root__' | '/' | '/metodo' | '/notacao' | '/oll' | '/pll'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MetodoRoute: typeof MetodoRoute
+  NotacaoRoute: typeof NotacaoRoute
+  OllRoute: typeof OllRoute
+  PllRoute: typeof PllRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +88,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/metodo': {
+      id: '/metodo'
+      path: '/metodo'
+      fullPath: '/metodo'
+      preLoaderRoute: typeof MetodoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notacao': {
+      id: '/notacao'
+      path: '/notacao'
+      fullPath: '/notacao'
+      preLoaderRoute: typeof NotacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oll': {
+      id: '/oll'
+      path: '/oll'
+      fullPath: '/oll'
+      preLoaderRoute: typeof OllRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pll': {
+      id: '/pll'
+      path: '/pll'
+      fullPath: '/pll'
+      preLoaderRoute: typeof PllRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MetodoRoute: MetodoRoute,
+  NotacaoRoute: NotacaoRoute,
+  OllRoute: OllRoute,
+  PllRoute: PllRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
