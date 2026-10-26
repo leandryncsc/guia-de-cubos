@@ -138,6 +138,8 @@
   .nav-link { padding: .35rem .8rem; border-radius: 999px; font-weight: 700; border: 2px solid transparent; }
   .nav-link:hover { border-color: var(--border); }
   .nav-link-active { background: var(--foreground); color: var(--background); }
+  .cube-stage-drag { cursor: grab; touch-action: none; user-select: none; }
+  .cube-stage-drag:active { cursor: grabbing; }
   .cube-stage { perspective: 900px; display: flex; align-items: center; justify-content: center; }
   .cube-body { position: relative; width: 0; height: 0; transform-style: preserve-3d; transform: rotateX(-28deg) rotateY(-38deg); }
   .cube-body-under { transform: rotateX(30deg) rotateY(-38deg); }
