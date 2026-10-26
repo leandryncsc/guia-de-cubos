@@ -94,7 +94,7 @@ export function parseAlg(src: string): Move[] {
   const parseSeq = (): Move[] => {
     const out: Move[] = [];
     while (i < s.length) {
-      const ch = s[i];
+      const ch = s[i] ?? "";
       if (ch === "(") {
         i++;
         const inner = parseSeq();
