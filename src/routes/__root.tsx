@@ -140,7 +140,7 @@ function RootComponent() {
         <Outlet />
       </main>
       <footer className="border-t-2 border-border py-6 text-center text-sm text-muted-foreground">
-        Algoritmos OLL/PLL baseados no material de O Cubo (Adel Fonseca).
+        © 2026 Cubo Fácil. Todos os direitos reservados.
       </footer>
     </QueryClientProvider>
   );
