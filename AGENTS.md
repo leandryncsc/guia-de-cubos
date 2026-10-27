@@ -9,5 +9,5 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep the Android Capacitor shell isolated in `mobile/` and load the HTTPS published app, because TanStack Start remains the web/SSR application rather than a static native bundle.
-- Never commit Android signing keys or machine-specific SDK paths; APK/AAB signing is performed by the owner in Android Studio.
+- Do not re-create the removed Android/Capacitor shell unless the owner asks again; the project ships as a web app only.
+- If a native shell is added later, keep it outside the web app folder and never commit signing keys or machine-specific SDK paths.
