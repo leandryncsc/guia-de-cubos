@@ -9,6 +9,8 @@ export const Route = createFileRoute("/metodo")({
       { name: "description", content: "Uma montagem completa do cubo mágico pelo método de camadas, etapa por etapa, com animação 3D." },
       { property: "og:title", content: "Passo a passo para montar o cubo mágico" },
       { property: "og:description", content: "Montagem completa, cada etapa continuando da anterior." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Metodo,

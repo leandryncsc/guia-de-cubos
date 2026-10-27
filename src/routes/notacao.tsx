@@ -8,6 +8,8 @@ export const Route = createFileRoute("/notacao")({
       { name: "description", content: "Notação do cubo mágico ilustrada: R, L, U, D, F, B, giros anti-horários, duplos, camadas do meio e rotações." },
       { property: "og:title", content: "Movimentos básicos do cubo mágico 3x3" },
       { property: "og:description", content: "Cada letra da notação animada em 3D." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Notacao,

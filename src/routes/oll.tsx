@@ -9,6 +9,8 @@ export const Route = createFileRoute("/oll")({
       { name: "description", content: "Todos os 57 casos de OLL do método CFOP com ilustração e animação 3D de cada algoritmo." },
       { property: "og:title", content: "OLL: os 57 casos com algoritmos" },
       { property: "og:description", content: "Orientação da última camada com animação 3D." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: () => (
