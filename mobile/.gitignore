@@ -1,0 +1,9 @@
+node_modules/
+.gradle/
+android/.gradle/
+android/local.properties
+android/captures/
+android/**/build/
+*.jks
+*.keystore
+keystore.properties

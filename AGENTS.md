@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the Android Capacitor shell isolated in `mobile/` and load the HTTPS published app, because TanStack Start remains the web/SSR application rather than a static native bundle.
+- Never commit Android signing keys or machine-specific SDK paths; APK/AAB signing is performed by the owner in Android Studio.

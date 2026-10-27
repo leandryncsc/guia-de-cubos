@@ -1,0 +1,12 @@
+{
+  "appId": "app.cubotech.cubofacil",
+  "appName": "Cubo Fácil",
+  "webDir": "www",
+  "server": {
+    "url": "https://cubotech.lovable.app",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
