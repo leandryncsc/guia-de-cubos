@@ -50,6 +50,12 @@ Site de dicas para montar o cubo mágico 3x3, com notação de movimentos e ilus
 
 ## Desenvolvimento
 
+## Aplicativo Android
+
+A versão Android está preparada em `mobile/`, separada do site, com o ícone do cubo mágico e acesso ao conteúdo publicado. Ela precisa de internet. Consulte [o guia Android](mobile/README.md) para abrir no Android Studio, testar no celular e gerar um APK assinado ou um AAB para a Google Play. A geração e assinatura são feitas no seu computador; nenhum APK foi gerado neste ambiente.
+
+## Desenvolvimento do site
+
 ```sh
 npm i
 npm run dev
