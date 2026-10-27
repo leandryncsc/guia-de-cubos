@@ -8,6 +8,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Aprenda a montar o cubo mágico com movimentos ilustrados em 3D, passo a passo e algoritmos OLL e PLL." },
       { property: "og:title", content: "Cubo Fácil — aprenda a montar o cubo mágico 3x3" },
       { property: "og:description", content: "Movimentos ilustrados em 3D, passo a passo para iniciantes e algoritmos OLL/PLL." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,

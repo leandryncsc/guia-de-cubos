@@ -9,6 +9,8 @@ export const Route = createFileRoute("/pll")({
       { name: "description", content: "Todos os 21 casos de PLL do método CFOP com ilustração e animação 3D." },
       { property: "og:title", content: "PLL: os 21 casos com algoritmos" },
       { property: "og:description", content: "Permutação da última camada com animação 3D." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: () => (
