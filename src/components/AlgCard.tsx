@@ -17,7 +17,16 @@ function Card({ name, alg }: { name: string; alg: string }) {
         </button>
       </div>
       {open ? <CubePlayer alg={alg} setup={setupStr} size={150} view="top" /> : <TopView state={caseState} />}
-      <code className="text-center font-mono text-sm leading-relaxed">{alg}</code>
+      <div className="w-full space-y-2 text-center">
+        <div>
+          <p className="mb-0.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Algoritmo que resolve o caso</p>
+          <code className="font-mono text-sm leading-relaxed">{alg}</code>
+        </div>
+        <div>
+          <p className="mb-0.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Setup (como colocar o caso)</p>
+          <code className="font-mono text-sm leading-relaxed">{setupStr}</code>
+        </div>
+      </div>
     </div>
   );
 }
