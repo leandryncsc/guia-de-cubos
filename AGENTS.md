@@ -11,3 +11,4 @@
 
 - Do not re-create the removed Android/Capacitor shell unless the owner asks again; the project ships as a web app only.
 - If a native shell is added later, keep it outside the web app folder and never commit signing keys or machine-specific SDK paths.
+- Keep the tutorial scramble explicit and derive each step's setup from that scramble plus all preceding steps; checkpoint tests protect the continuous solve.
