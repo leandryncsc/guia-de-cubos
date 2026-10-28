@@ -26,7 +26,7 @@ function Metodo() {
         </p>
         <div className="toy-card space-y-2 p-4">
           <p className="font-bold">Embaralhe assim (amarelo em cima, verde na frente):</p>
-          <code className="block font-mono text-sm leading-relaxed">{SCRAMBLE}</code>
+          <code className="block whitespace-pre-wrap break-words font-mono text-sm leading-relaxed">{SCRAMBLE}</code>
         </div>
       </header>
       <ol className="space-y-6">
