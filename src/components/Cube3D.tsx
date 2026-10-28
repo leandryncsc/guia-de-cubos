@@ -4,6 +4,7 @@ import {
   type Move, type Sticker, type Vec,
 } from "@/lib/cube";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const unit = (i: number): Vec => [0, 1, 2].map((k) => (k === i ? 1 : 0)) as Vec;
 
@@ -47,7 +48,7 @@ export function CubeView({ state, anim, size = 180, view = "front", draggable = 
         {state.map((s, i) => {
           const a = info && info.inLayer(s) ? { axis: info.axis, deg: info.deg * ease } : undefined;
           return (
-            <div key={i} className="cube-sticker" style={{ width: S, height: S, marginLeft: -S / 2, marginTop: -S / 2, transform: stickerMatrix(s, S, a) }}>
+            <div key={i} className="cube-sticker" style={{ width: S, height: S, padding: S * 0.07, marginLeft: -S / 2, marginTop: -S / 2, transform: stickerMatrix(s, S, a) }}>
               <span style={{ background: `var(--cube-${s.c})` }} />
             </div>
           );
@@ -57,8 +58,8 @@ export function CubeView({ state, anim, size = 180, view = "front", draggable = 
   );
 }
 
-export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 180, compact = false, view }: {
-  alg: string; setup?: string; loop?: boolean; autoplay?: boolean; size?: number; compact?: boolean; view?: "front" | "top" | "under" | undefined;
+export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 180, compact = false, view, showProgress = false }: {
+  alg: string; setup?: string; loop?: boolean; autoplay?: boolean; size?: number; compact?: boolean; view?: "front" | "top" | "under" | undefined; showProgress?: boolean;
 }) {
   const moves = useMemo(() => parseAlg(alg), [alg]);
   const initial = useMemo(() => applyAlg(solved(), parseAlg(setup ?? "")), [setup]);
@@ -107,20 +108,23 @@ export function CubePlayer({ alg, setup, loop = false, autoplay = false, size = 
       {!compact && <p className="text-xs text-muted-foreground">Arraste o cubo para girar · duplo clique volta</p>}
       {!compact && (
         <>
-          <div className="flex flex-wrap justify-center gap-1 font-mono text-sm">
+          {showProgress ? <div className="space-y-1 text-center text-sm" aria-live="polite">
+            <p className="font-semibold">{idx === moves.length ? "Embaralhamento concluído" : `Movimentos: ${idx} de ${moves.length}`}</p>
+            <p className="h-6 font-mono text-muted-foreground">{moves[idx] ? <>{anim ? "Girando" : "Próximo"}: <span className="font-bold text-foreground">{moveLabel(moves[idx])}</span></> : "Pronto para a cruz branca"}</p>
+          </div> : <div className="flex flex-wrap justify-center gap-1 font-mono text-sm">
             {moves.map((m, i) => (
               <span key={i} className={cn("move-chip", i === current && "move-chip-active", i < current && "move-chip-done")}>
                 {moveLabel(m)}
               </span>
             ))}
-          </div>
+          </div>}
           <div className="flex flex-wrap justify-center gap-2 text-sm">
-            <button className="btn-toy" onClick={() => { if (idx >= moves.length) reset(); setPlaying((p) => !p); }}>
+            <Button className="btn-toy" onClick={() => { if (idx >= moves.length) reset(); setPlaying((p) => !p); }}>
               {playing ? "Pausar" : idx >= moves.length ? "Repetir" : "Reproduzir"}
-            </button>
-            <button className="btn-toy btn-toy-ghost" onClick={step} disabled={playing}>Passo</button>
-            <button className="btn-toy btn-toy-ghost" onClick={() => { setPlaying(false); reset(); }}>Reiniciar</button>
-            <button className="btn-toy btn-toy-ghost" onClick={() => setVw((v) => (v === "under" ? "front" : "under"))}>{vw === "under" ? "Ver cima" : "Ver baixo"}</button>
+            </Button>
+            <Button className="btn-toy btn-toy-ghost" onClick={step} disabled={playing || Boolean(anim) || idx >= moves.length}>Passo</Button>
+            <Button className="btn-toy btn-toy-ghost" onClick={() => { setPlaying(false); reset(); }}>Reiniciar</Button>
+            <Button className="btn-toy btn-toy-ghost" onClick={() => setVw((v) => (v === "under" ? "front" : "under"))}>{vw === "under" ? "Ver cima" : "Ver baixo"}</Button>
           </div>
         </>
       )}

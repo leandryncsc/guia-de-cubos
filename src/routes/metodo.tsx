@@ -24,11 +24,15 @@ function Metodo() {
         <p className="text-lg text-muted-foreground">
           Uma montagem completa do começo ao fim. Cada etapa continua exatamente de onde a anterior parou — faça junto no seu cubo.
         </p>
-        <div className="toy-card space-y-2 p-4">
+      </header>
+      <section aria-label="Embaralhamento ilustrado" className="grid items-center gap-6 border-y-2 border-border py-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="min-w-0 space-y-4">
+          <h2 className="section-title">Embaralhamento</h2>
           <p className="font-bold">Embaralhe assim (amarelo em cima, verde na frente):</p>
           <code className="block whitespace-pre-wrap break-words font-mono text-sm leading-relaxed">{SCRAMBLE}</code>
         </div>
-      </header>
+        <CubePlayer alg={SCRAMBLE} size={190} showProgress />
+      </section>
       <ol className="space-y-6">
         {SOLVE_STEPS.map((s, i) => (
           <li key={s.t} className="toy-card grid items-center gap-6 p-6 md:grid-cols-[1fr_auto]">
